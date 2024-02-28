@@ -1,3 +1,10 @@
-type Query{
+type Query {
   greeting: String
+  jobs: [Job!]
+}
+
+type Job {
+  id: ID!
+  title: String!
+  description: String
 }
