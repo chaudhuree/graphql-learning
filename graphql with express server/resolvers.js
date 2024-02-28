@@ -1,4 +1,5 @@
 import { getJobs } from "./db/jobs.js";
+import {getCompany} from "./db/companies.js";
 export const resolvers = {
   Query: {
     jobs: async () => {
@@ -6,6 +7,9 @@ export const resolvers = {
     },
   },
   Job: {
+    company: async (job) => {
+      return await getCompany(job.companyId);
+    },
     date: (job) => formatedData(job.createdAt),
   },
 };
