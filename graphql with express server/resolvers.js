@@ -8,6 +8,9 @@ export const resolvers = {
     job: async (_root, { id }) => {
       return await getJob(id);
     },
+    company: async (_root, { id }) => {
+      return await getCompany(id);
+    },
   },
   Job: {
     company: async (job) => {
