@@ -7,6 +7,7 @@ import { getJobs } from '../lib/graphql/queries';
 //   console.log(data);
 // });
 
+
 function JobList() {
   const [jobs, setJobs] = useState([]);
   useEffect(() => {

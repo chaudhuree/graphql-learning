@@ -1,11 +1,14 @@
 type Query {
+  job(id: ID!): Job
   jobs: [Job!]
 }
 
 type Job {
   id: ID!
   title: String!
-  """ _date_ is generated customly"""
+  """
+  _date_ is generated customly
+  """
   date: String!
   description: String
   company: Company!
