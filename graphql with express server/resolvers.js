@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { getJobs, getJob, getJobsByCompany, createJob } from "./db/jobs.js";
+import { getJobs, getJob, getJobsByCompany, createJob, deleteJob } from "./db/jobs.js";
 import { getCompany } from "./db/companies.js";
 export const resolvers = {
   Query: {
@@ -37,6 +37,10 @@ export const resolvers = {
     createJob: async (_root, { input: { title, description } }) => {
       const companyId = "FjcJCHJALA4i";
       const job = await createJob({ title, description, companyId });
+      return job;
+    },
+    deleteJob: async (_root, { id }) => {
+      const job = await deleteJob(id);
       return job;
     },
   },
