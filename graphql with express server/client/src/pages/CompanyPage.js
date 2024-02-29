@@ -5,19 +5,39 @@ import {JobItem} from '../components/JobList';
 
 function CompanyPage() {
   const { companyId } = useParams();
-  const [company, setCompany] = useState();
+  const [state, setState] = useState({
+    company:null,
+    loading:true,
+    error:false
+  });
   useEffect(() => {
-    getCompany(companyId).then((data
-    ) => {
-      setCompany(data);
-    }
-    );
+    (async () => {
+      try {
+        const company = await getCompany(companyId);
+        setState({
+          company,
+          loading:false,
+          error:false
+        });
+      } catch (error) {
+        setState({
+          company:null,
+          loading:false,
+          error:true
+        });
+      }
+    })()
   }
   , [companyId]);
-  console.log('company', company);
+  // console.log('company', company);
+  const {company,loading,error} = state;
   
-  if (!company) {
+  if (loading) {
     return <p>Loading...
+    </p>;
+  }
+  if (error) {
+    return <p className='has-text-danger'>No Data Found
     </p>;
   }
   return (

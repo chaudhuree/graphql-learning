@@ -1,15 +1,36 @@
+import {GraphQLError} from 'graphql'
 import { getJobs,getJob, getJobsByCompany } from "./db/jobs.js";
 import {getCompany} from "./db/companies.js";
 export const resolvers = {
   Query: {
     jobs: async () => {
-      return await getJobs();
+      const jobs = await getJobs();
+      if (!jobs) {
+        throw new GraphQLError("No jobs found");
+      }
+      return jobs;
     },
     job: async (_root, { id }) => {
-      return await getJob(id);
+      const job = await getJob(id);
+      if (!job) {
+        throw new GraphQLError("No job found with id: " + id ,{
+          extensions: {
+            code: "NOT_FOUND"
+          }
+        });
+      }
+      return  job;
     },
     company: async (_root, { id }) => {
-      return await getCompany(id);
+      const company = await getCompany(id);
+      if (!company) {
+        throw new GraphQLError("No company found with id: " + id ,{
+          extensions: {
+            code: "NOT_FOUND"
+          }
+        });
+      }
+      return  company;
     },
   },
   Job: {
