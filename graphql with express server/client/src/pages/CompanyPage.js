@@ -1,6 +1,7 @@
-import { useParams } from 'react-router';
+import { useParams ,Link} from 'react-router';
 import { getCompany } from '../lib/graphql/queries';
 import { useEffect,useState } from 'react';
+import {JobItem} from '../components/JobList';
 
 function CompanyPage() {
   const { companyId } = useParams();
@@ -13,6 +14,8 @@ function CompanyPage() {
     );
   }
   , [companyId]);
+  console.log('company', company);
+  
   if (!company) {
     return <p>Loading...
     </p>;
@@ -25,6 +28,12 @@ function CompanyPage() {
       <div className="box">
         {company.description}
       </div>
+      <h2 className='title is-5'>
+        Jobs at {company.name}
+      </h2>
+      {company.jobs.map((job) => (
+        <JobItem key={job.id} job={job} />
+      ))}
     </div>
   );
 }
