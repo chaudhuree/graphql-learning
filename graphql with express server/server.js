@@ -11,6 +11,7 @@ const app = express();
 
 const typeDefs = await fs.readFile('./schema.graphql', 'utf-8');
 async function  getContext({ req }) {
+  // req.auth = {sub:'user id', email:'user email'}
   if (req.auth) {
     const user = await getUser(req.auth.sub); //sub is the user id here
     return { user };
