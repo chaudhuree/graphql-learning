@@ -43,12 +43,32 @@ export const resolvers = {
       const job = await createJob({ title, description, companyId:context.user.companyId });
       return job;
     },
-    deleteJob: async (_root, { id }) => {
-      const job = await deleteJob(id);
+    deleteJob: async (_root, { id },context) => {
+      if(!context.user){
+        throw unauthorizedError('You are not authorized to perform this action');
+      }
+      const job = await deleteJob(id,context.user.companyId);
+      if(!job){
+        throw new GraphQLError("No job found with this id: " + id, {
+          extensions: {
+            code: "NOT_FOUND",
+          },
+        });
+      }
       return job;
     },
-    updateJob: async (_root, { input: { id,title, description } }) => {
+    updateJob: async (_root, { input: { id,title, description } },context) => {
+      if(!context.user){
+        throw unauthorizedError('You are not authorized to perform this action');
+      }
       const job = await updateJob( {id, title, description });
+      if(!job){
+        throw new GraphQLError("No job found with this id: " + id, {
+          extensions: {
+            code: "NOT_FOUND",
+          },
+        });
+      }
       return job;
     },
   },
