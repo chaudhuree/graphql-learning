@@ -1,22 +1,41 @@
-import { ApolloClient,InMemoryCache,gql} from "@apollo/client"
-import { GraphQLClient } from "graphql-request";
+import {
+  ApolloClient,
+  ApolloLink,
+  InMemoryCache,
+  concat,
+  createHttpLink,
+  gql,
+} from "@apollo/client";
+// import { GraphQLClient } from "graphql-request";
 import { getAccessToken } from "../auth";
 
-const endpoint = "http://localhost:9000/graphql";
+// const endpoint = "http://localhost:9000/graphql";
 
+// const client = new GraphQLClient(endpoint, {
+//   headers: () => {
+//     const accessToken = getAccessToken();
+//     if (accessToken) {
+//       return { 'Authorization': `Bearer ${accessToken}` };
+//     }
+//     return {};
+//   },
+// });
 
-const client = new GraphQLClient(endpoint, {
-  headers: () => {
-    const accessToken = getAccessToken();
-    if (accessToken) {
-      return { 'Authorization': `Bearer ${accessToken}` };
-    }
-    return {};
-  },
+const httpLink = createHttpLink({ uri:"http://localhost:9000/graphql"});
+const authLink = new ApolloLink((operation, forward) => {
+  const accessToken = getAccessToken();
+  if (accessToken) {
+    operation.setContext({
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    });
+  }
+  return forward(operation);
 });
 
 const apolloClient = new ApolloClient({
-  uri: endpoint,
+  link: concat(authLink, httpLink),
   cache: new InMemoryCache(),
 });
 export const getJobs = async () => {
@@ -37,7 +56,7 @@ export const getJobs = async () => {
   // const data = await client.request(query);
   // return data.jobs;
   const { data } = await apolloClient.query({
-    query
+    query,
   });
   return data.jobs;
 };
@@ -61,7 +80,7 @@ export const getJob = async (id) => {
   // return data.job;
   const { data } = await apolloClient.query({
     query,
-    variables: { id }
+    variables: { id },
   });
   return data.job;
 };
@@ -84,7 +103,7 @@ export const getCompany = async (id) => {
   // return data.company;
   const { data } = await apolloClient.query({
     query,
-    variables: { id }
+    variables: { id },
   });
   return data.company;
 };
@@ -98,8 +117,13 @@ export async function createJob({ title, description }) {
       }
     }
   `;
-  const variables = { input: { title, description } };
-  const data = await client.request(mutation, variables);
+  // const variables = { input: { title, description } };
+  // const data = await client.request(mutation, variables);
+  // return data.job;
+  const { data } = await apolloClient.mutate({
+    mutation,
+    variables: { input: { title, description } },
+  });
   return data.job;
 }
 
@@ -113,8 +137,14 @@ export async function deleteJob(id) {
       }
     }
   `;
-  const variables = { id };
-  const data = await client.request(mutation, variables);
+  // const variables = { id };
+  // const data = await client.request(mutation, variables);
+  // return data.job;
+  const { data } = await apolloClient.mutate({
+    mutation,
+    variables: { id },
+  });
+
   return data.job;
 }
 
@@ -129,7 +159,12 @@ export async function updateJob({ id, title, description }) {
       }
     }
   `;
-  const variables = { input: { id, title, description } };
-  const data = await client.request(mutation, variables);
+  // const variables = { input: { id, title, description } };
+  // const data = await client.request(mutation, variables);
+  // return data.job;
+  const { data } = await apolloClient.mutate({
+    mutation,
+    variables: { input: { id, title, description } },
+  });
   return data.job;
 }
