@@ -34,7 +34,11 @@ export const getJobs = async () => {
       }
     }
   `;
-  const data = await client.request(query);
+  // const data = await client.request(query);
+  // return data.jobs;
+  const { data } = await apolloClient.query({
+    query
+  });
   return data.jobs;
 };
 
@@ -53,7 +57,12 @@ export const getJob = async (id) => {
       }
     }
   `;
-  const data = await client.request(query, { id });
+  // const data = await client.request(query, { id });
+  // return data.job;
+  const { data } = await apolloClient.query({
+    query,
+    variables: { id }
+  });
   return data.job;
 };
 
@@ -71,7 +80,12 @@ export const getCompany = async (id) => {
       }
     }
   `;
-  const data = await client.request(query, { id });
+  // const data = await client.request(query, { id });
+  // return data.company;
+  const { data } = await apolloClient.query({
+    query,
+    variables: { id }
+  });
   return data.company;
 };
 
