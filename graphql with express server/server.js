@@ -4,6 +4,7 @@ import fs from 'node:fs/promises'; // this returns the data in text format
 import cors from 'cors';
 import express from 'express';
 import { resolvers } from './resolvers.js';
+import { handleLogin } from './auth.js';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(cors(), express.json())
 app.get('/', (req, res) => {
   res.send('server is running 🚀');
 });
+app.post('/login', handleLogin);
 app.use('/graphql',  apolloMiddleware(server));
 
 app.listen(9000, () => {
