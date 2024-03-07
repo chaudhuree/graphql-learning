@@ -9,6 +9,9 @@ import { authMiddleware, handleLogin } from './auth.js';
 const app = express();
 
 const typeDefs = await fs.readFile('./schema.graphql', 'utf-8');
+function getContext({ req }) {
+  return { auth: req.auth };
+}
 const server = new ApolloServer({
   typeDefs,
   resolvers,
@@ -22,7 +25,7 @@ app.get('/', (req, res) => {
   res.send('server is running 🚀');
 });
 app.post('/login', handleLogin);
-app.use('/graphql',  apolloMiddleware(server));
+app.use('/graphql',  apolloMiddleware(server,{context:getContext}));
 
 app.listen(9000, () => {
   console.log('Server started on http://localhost:9000');

@@ -34,7 +34,11 @@ export const resolvers = {
     },
   },
   Mutation: {
-    createJob: async (_root, { input: { title, description } }) => {
+    createJob: async (_root, { input: { title, description } },context) => {
+      if(!context.auth){
+        throw unauthorizedError('You are not authorized to perform this action');
+      }
+
       const companyId = "FjcJCHJALA4i";
       const job = await createJob({ title, description, companyId });
       return job;
@@ -67,4 +71,9 @@ export const resolvers = {
 
 function formatedData(value) {
   return value.slice(0, "yyyy-mm-dd".length);
+}
+function unauthorizedError(message) {
+  return new GraphQLError(message, {
+    extensions: { code: 'UNAUTHORIZED' },
+  });
 }
