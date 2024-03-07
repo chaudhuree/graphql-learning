@@ -35,12 +35,12 @@ export const resolvers = {
   },
   Mutation: {
     createJob: async (_root, { input: { title, description } },context) => {
-      if(!context.auth){
+      if(!context.user){
         throw unauthorizedError('You are not authorized to perform this action');
       }
 
-      const companyId = "FjcJCHJALA4i";
-      const job = await createJob({ title, description, companyId });
+      // const companyId = "FjcJCHJALA4i";
+      const job = await createJob({ title, description, companyId:context.user.companyId });
       return job;
     },
     deleteJob: async (_root, { id }) => {

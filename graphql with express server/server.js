@@ -5,12 +5,17 @@ import cors from 'cors';
 import express from 'express';
 import { resolvers } from './resolvers.js';
 import { authMiddleware, handleLogin } from './auth.js';
+import { getUser } from './db/users.js';
 
 const app = express();
 
 const typeDefs = await fs.readFile('./schema.graphql', 'utf-8');
-function getContext({ req }) {
-  return { auth: req.auth };
+async function  getContext({ req }) {
+  if (req.auth) {
+    const user = await getUser(req.auth.sub); //sub is the user id here
+    return { user };
+  }
+  return {};
 }
 const server = new ApolloServer({
   typeDefs,
