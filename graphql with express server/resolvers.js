@@ -61,7 +61,7 @@ export const resolvers = {
       if(!context.user){
         throw unauthorizedError('You are not authorized to perform this action');
       }
-      const job = await updateJob( {id, title, description });
+      const job = await updateJob( {id, title, description,companyId:context.user.companyId });
       if(!job){
         throw new GraphQLError("No job found with this id: " + id, {
           extensions: {
