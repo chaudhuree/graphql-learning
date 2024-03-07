@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { formatDate } from '../lib/formatters';
-import { getJob } from '../lib/graphql/queries';
+import { getJob,deleteJob } from '../lib/graphql/queries';
 // getJob("6mA05AZxvS1R").then((data) => {
 //   console.log('job',data);
 // } )
 function JobPage() {
   const { jobId } = useParams();
   const [job, setJob] = useState();
+  const navigate = useNavigate();
   
   useEffect(() => {
     getJob(jobId).then((data) => {
@@ -17,14 +19,25 @@ function JobPage() {
       
     } )
   }, [jobId]);
-  console.log('job', job);
+  // delete job
+  const handleDelete = async () => {
+    try {
+      const deletedJob = await deleteJob(jobId);
+      navigate('/')
+    } catch (error) {
+      alert('An error occurred while deleting the job');
+      navigate('/');
+      
+    }
+  }
+  // console.log('job', job);
   if(!job) {
     return <p>Loading...</p>
   }
   return (
     <div>
       <h1 className="title is-2">
-        {job?.title}
+        {job?.title} <button className="delete" onClick={handleDelete}></button>
       </h1>
       <h2 className="subtitle is-4">
         <Link to={`/companies/${job.company.id}`}>
