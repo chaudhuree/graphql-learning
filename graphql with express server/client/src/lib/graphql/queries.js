@@ -62,20 +62,28 @@ export const getJobs = async () => {
   return data.jobs;
 };
 
+// create job query fragment
+const jobDetailsFragment = gql`
+  fragment JobDetail on Job {
+    id
+    date
+    title
+    company {
+      id
+      name
+    }
+    description
+  }
+`;
+
 export const getJob = async (id) => {
   const query = gql`
     query getJobById($id: ID!) {
       job(id: $id) {
-        id
-        date
-        title
-        company {
-          id
-          name
-        }
-        description
+        ...JobDetail
       }
     }
+    ${jobDetailsFragment}
   `;
   // const data = await client.request(query, { id });
   // return data.job;
