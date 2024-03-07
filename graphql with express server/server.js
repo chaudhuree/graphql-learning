@@ -4,7 +4,7 @@ import fs from 'node:fs/promises'; // this returns the data in text format
 import cors from 'cors';
 import express from 'express';
 import { resolvers } from './resolvers.js';
-import { handleLogin } from './auth.js';
+import { authMiddleware, handleLogin } from './auth.js';
 
 const app = express();
 
@@ -17,7 +17,7 @@ const server = new ApolloServer({
 await server.start();
 
 
-app.use(cors(), express.json())
+app.use(cors(), express.json(),authMiddleware)
 app.get('/', (req, res) => {
   res.send('server is running 🚀');
 });
